@@ -1,5 +1,7 @@
 import { useState, lazy, Suspense } from 'react'
 import {createBrowserRouter, Navigate, Outlet, RouterProvider} from 'react-router'
+import useUserStore from '../stores/userStore'
+import UserLayout from '../layouts/UserLayout'
 // import Home from '../pages/Home'
 // import Friends from '../pages/Friends'
 // import Profile from '../pages/Profile'
@@ -17,11 +19,7 @@ const guestRouter = createBrowserRouter([
 ])
 
 const userRouter = createBrowserRouter([
-  {path : "/", element:
-    <>
-      <div className='text-4xl py-4 border'>Header</div>
-      <Outlet />
-    </>,
+  {path : "/", element: <UserLayout />,
     children: [
       {index: true, element: <Home />},
       {path: "friends", element: <Friends />},
@@ -33,16 +31,13 @@ const userRouter = createBrowserRouter([
 ])
 
 function AppRouter() {
-  let user = null
-  // let user = 'andy'
-  // const [user, setUser] = useState(false)
+  const user = useUserStore(state => state.user)
   const finalRouter = user ? userRouter : guestRouter
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <RouterProvider router={finalRouter} />
+      <RouterProvider key={user?.id} router={finalRouter} />
     </Suspense>
   )
 }
-{/* <button className='btn btn-primary' onClick={() => setUser(!user)}>Login-Logout</button> */}
 
 export default AppRouter
