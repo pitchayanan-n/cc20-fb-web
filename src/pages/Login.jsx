@@ -1,6 +1,24 @@
+import { useState } from "react";
 import { FakebookTitle } from "../icons";
+import Register from "./Register";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "../utils/validators";
 
 function Login() {
+  const [resetForm, setResetForm] = useState(false);
+  const {handleSubmit, register, formState: {errors, isSubmitting}, reset} = useForm({
+    resolver: yupResolver(loginSchema),
+  });
+
+  const hdlClose = () => {
+    console.log("dialog close...");
+    setResetForm((prv) => !prv);
+  };
+  const hdlLogin = data => {
+    alert(JSON.stringify(data, null, 2))
+  }
+
   return (
     <>
       <div className="h-[700px] pt-20 pb-28">
@@ -15,24 +33,34 @@ function Login() {
           </div>
           <div className="flex flex-1 bg-white">
             <div className="card bg-base-100 w-full h-[350px] shadow-xl mt-8">
-              <form>
+              <form onSubmit={handleSubmit(hdlLogin)}>
                 <div className="card-body">
                   <input
                     type="text"
                     className="input w-full"
                     placeholder="E-mail or Phone Number"
+                    {...register("identity")}
                   />
+                  {errors.identity?.message && <p className="text-sm text-error">{errors.identity.message}</p>}
                   <input
                     type="password"
                     className="input w-full"
                     placeholder="Password"
+                    {...register("password")}
                   />
+                  {errors.password?.message && <p className="text-sm text-error">{errors.password.message}</p>}
                   <button className="btn btn-primary text-xl">Login</button>
                   <p className="text-center cursor-pointer opacity-70">
                     Forgotten Password
                   </p>
                   <div className="divider my-0"></div>
-                  <button className="btn btn-secondary text-lg mx-auto">
+                  <button
+                    type="button"
+                    className="btn btn-secondary text-lg mx-auto"
+                    onClick={() =>
+                      document.getElementById("register-form").showModal()
+                    }
+                  >
                     Create new account
                   </button>
                 </div>
@@ -41,16 +69,14 @@ function Login() {
           </div>
         </div>
       </div>
-      <dialog id="my_modal_3" className="modal">
+      <dialog id="register-form" className="modal" onClose={hdlClose}>
         <div className="modal-box">
+          <Register resetForm={resetForm} />
           <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
             </button>
           </form>
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">Press ESC key or click on ✕ button to close</p>
         </div>
       </dialog>
     </>
