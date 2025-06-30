@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PhotoIcon2 } from "../icons";
 import useUserStore from "../stores/userStore";
 import Avatar from "./Avatar";
+import AddPicture from "./AddPicture";
 
 function PostForm() {
   const user = useUserStore((state) => state.user);
@@ -28,7 +29,7 @@ function PostForm() {
         className="textarea textarea-ghost w-full"
         placeholder={`What do you think? ${user.firstName}`}
       ></textarea>
-      {addPic && <div className="text-4xl p-10 border">Add Picture</div>}
+      {addPic && <AddPicture />}
       <div className="flex justify-between border rounded-lg p-2 items-center cursor-pointer">
         <p>Add with your post</p>
         <div
